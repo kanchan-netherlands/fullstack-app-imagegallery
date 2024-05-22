@@ -4,6 +4,7 @@ LABEL maintainer="sudhams reddy duba<sudhams@visualpath.in>"
 ENV POSTGRES_DB=userdb
 ENV POSTGRES_USER=testuser2
 ENV POSTGRES_PASSWORD=test123
+PORT 5432
 
 
 
