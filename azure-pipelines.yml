@@ -1,0 +1,58 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.x'
+          - script: |
+              python -m venv venv
+              source venv/bin/activate
+              pip install -r requirements.txt
+            displayName: 'Install dependencies'
+
+  - stage: Test
+    jobs:
+      - job: Test
+        steps:
+          - script: |
+              source venv/bin/activate
+              pytest
+            displayName: 'Run tests'
+
+  - stage: Security
+    jobs:
+      - job: Security
+        steps:
+          - script: |
+              source venv/bin/activate
+              pip install bandit
+              bandit -r .
+            displayName: 'Run security scans'
+
+  - stage: Deploy
+    jobs:
+      - deployment: Deploy
+        environment: 'staging'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: Kubernetes@1
+                  inputs:
+                    connectionType: 'Azure Resource Manager'
+                    azureSubscription: '<Your Service Connection>'
+                    azureResourceGroup: '<Your Resource Group>'
+                    kubernetesCluster: '<Your AKS Cluster>'
+                    namespace: 'default'
+                    command: 'apply'
+                    useConfigurationFile: true
+                    configuration: '$(System.DefaultWorkingDirectory)/manifests/*.yaml'
+
