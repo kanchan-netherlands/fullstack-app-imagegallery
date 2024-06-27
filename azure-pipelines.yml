@@ -48,9 +48,9 @@ stages:
                 - task: Kubernetes@1
                   inputs:
                     connectionType: 'Azure Resource Manager'
-                    azureSubscription: '<Your Service Connection>'
-                    azureResourceGroup: '<Your Resource Group>'
-                    kubernetesCluster: '<Your AKS Cluster>'
+                    azureSubscription: 'Service Connection'
+                    azureResourceGroup: 'example-resources'
+                    kubernetesCluster: 'example-aks-cluster'
                     namespace: 'default'
                     command: 'apply'
                     useConfigurationFile: true
