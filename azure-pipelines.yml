@@ -13,6 +13,9 @@ stages:
     jobs:
       - job: Test
         steps:
+          - script: |
+              source venv/bin/activate
+              pytest
             displayName: 'Run tests'
 
   - stage: Security
